@@ -16,7 +16,5 @@ export interface Reminder {
   channel: 'email' | 'sms';
 }
 
-export interface User {
-  id: string;
-  name: string;
-}
+// Remove the custom User interface since we're now using Supabase's User type
+// The profile data will be handled separately through the profiles table

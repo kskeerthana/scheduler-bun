@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 interface NavigationProps {
   currentView: 'dashboard' | 'calendar';
@@ -9,7 +10,21 @@ interface NavigationProps {
 }
 
 const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
-  const { user, logout } = useAuth();
+  const { profile, user, signOut } = useAuth();
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to log out",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const displayName = profile?.name || user?.email || 'User';
 
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
@@ -40,10 +55,10 @@ const Navigation = ({ currentView, onViewChange }: NavigationProps) => {
           </div>
           
           <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">Welcome, {user?.name} 👋</span>
+            <span className="text-sm text-gray-600">Welcome, {displayName} 👋</span>
             <Button
               variant="outline"
-              onClick={logout}
+              onClick={handleLogout}
               className="px-4 py-2 rounded-lg"
             >
               Logout
